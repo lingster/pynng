@@ -113,13 +113,9 @@ async def test_pub_sub_trio():
                 await pubber.asend(b'even:None')
 
     async def subs(which):
-        if which == 'even':
-            pred = is_even
-        else:
-            pred = lambda i: not is_even(i)
-
+        pred = is_even if which == 'even' else (lambda i: not is_even(i))
         with pynng.Sub0(dial=addr, recv_timeout=5000) as subber:
-            subber.subscribe(which + ':')
+            subber.subscribe(f'{which}:')
 
             while True:
                 val = await subber.arecv()

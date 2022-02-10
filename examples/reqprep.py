@@ -31,7 +31,7 @@ async def node0(sock):
 async def node1():
     with pynng.Req0() as sock:
         sock.dial(address)
-        print(f"NODE1: SENDING DATE REQUEST")
+        print('NODE1: SENDING DATE REQUEST')
         await sock.asend(DATE.encode())
         msg = await sock.arecv_msg()
         print(f"NODE1: RECEIVED DATE {msg.bytes.decode()}")

@@ -48,8 +48,7 @@ class InprocAddr(SockAddr):
 
     @property
     def name_bytes(self):
-        name = pynng.ffi.string(self._mem.sa_name)
-        return name
+        return pynng.ffi.string(self._mem.sa_name)
 
     @property
     def name(self):
@@ -67,8 +66,7 @@ class IPCAddr(SockAddr):
 
     @property
     def path_bytes(self):
-        path = pynng.ffi.string(self._mem.sa_path)
-        return path
+        return pynng.ffi.string(self._mem.sa_path)
 
     @property
     def path(self):

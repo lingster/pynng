@@ -15,9 +15,10 @@ if sys.platform == 'win32':
     mbedtls_dir = './mbedtls/build/library/Release'
     objects += [
         mbedtls_dir + "/mbedtls.lib",
-        mbedtls_dir + "/mbedx509.lib",
+        f'{mbedtls_dir}/mbedx509.lib',
         mbedtls_dir + "/mbedcrypto.lib",
     ]
+
 
     # system libraries determined to be necessary through trial and error
     libraries = ['Ws2_32', 'Advapi32']
@@ -28,7 +29,11 @@ else:
     machine = os.uname().machine
     # this is a pretty heuristic... but let's go with it anyway.
     # it would be better to get linker information from cmake somehow.
-    if not ('x86' in machine or 'i386' in machine or 'i686' in machine):
+    if (
+        'x86' not in machine
+        and 'i386' not in machine
+        and 'i686' not in machine
+    ):
         libraries.append('atomic')
 
 

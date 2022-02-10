@@ -21,10 +21,7 @@ WINDOWS = sys.platform == 'win32'
 
 def _rmdir(dirname):
     # we can't use shutil.rmtree because it won't delete readonly files.
-    if WINDOWS:
-        cmd = ['rmdir', '/q', '/s', dirname]
-    else:
-        cmd = ['rm', '-rf', dirname]
+    cmd = ['rmdir', '/q', '/s', dirname] if WINDOWS else ['rm', '-rf', dirname]
     return check_call(cmd)
 
 
@@ -97,13 +94,9 @@ def build_libs():
     major, minor, *_ = sys.version_info
 
     flags = ['-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true']
-    is_64bit = sys.maxsize > 2**32
     if WINDOWS:
-        if is_64bit:
-            flags += ['-A', 'x64']
-        else:
-            flags += ['-A', 'win32']
-
+        is_64bit = sys.maxsize > 2**32
+        flags += ['-A', 'x64'] if is_64bit else ['-A', 'win32']
     if shutil.which('ninja'):
         # the ninja build generator is a million times faster.
         flags += ['-G', 'Ninja']
