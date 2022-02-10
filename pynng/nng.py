@@ -739,10 +739,7 @@ class Pair1(Socket):
         dial_addr = kwargs.pop('dial', None)
         listen_addr = kwargs.pop('dial', None)
         super().__init__(**kwargs)
-        if polyamorous:
-            self._opener = lib.nng_pair1_open_poly
-        else:
-            self._opener = lib.nng_pair1_open
+        self._opener = lib.nng_pair1_open_poly if polyamorous else lib.nng_pair1_open
         # now we can do the listen/dial
         if dial_addr is not None:
             self.dial(dial_addr, block=kwargs.get('block_on_dial'))
@@ -1241,12 +1238,10 @@ class Context:
     def close(self):
         """Close this context."""
         ctx_err = 0
-        if self._context is not None:
-            # check that nng still has a reference
-            if lib.nng_ctx_id(self.context) != -1:
-                ctx_err = lib.nng_ctx_close(self.context)
-                self._context = None
-                check_err(ctx_err)
+        if self._context is not None and lib.nng_ctx_id(self.context) != -1:
+            ctx_err = lib.nng_ctx_close(self.context)
+            self._context = None
+            check_err(ctx_err)
 
     def __enter__(self):
         return self
@@ -1540,7 +1535,7 @@ class Message:
             if not self._mem_freed:
                 size = lib.nng_msg_len(self._nng_msg)
                 data = ffi.cast('char *', lib.nng_msg_body(self._nng_msg))
-                return ffi.buffer(data[0:size])
+                return ffi.buffer(data[:size])
 
     @property
     def bytes(self):
@@ -1554,10 +1549,9 @@ class Message:
         with self._mem_freed_lock:
             if self._mem_freed:
                 return
-            else:
-                lib.nng_msg_free(self._nng_msg)
-                # pretty sure it's not necessary to set this, but that's okay.
-                self._mem_freed = True
+            lib.nng_msg_free(self._nng_msg)
+            # pretty sure it's not necessary to set this, but that's okay.
+            self._mem_freed = True
 
     def _ensure_can_send(self):
         """

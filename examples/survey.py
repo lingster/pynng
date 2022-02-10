@@ -20,7 +20,7 @@ async def server(sock, max_survey_request=10):
     async def survey_eternally():
         nonlocal max_survey_request
         while max_survey_request:
-            print(f"SERVER: SENDING DATE SURVEY REQUEST")
+            print('SERVER: SENDING DATE SURVEY REQUEST')
             await sock.asend(DATE.encode())
             while True:
                 try:

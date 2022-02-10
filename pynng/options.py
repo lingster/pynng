@@ -77,7 +77,7 @@ def _setopt_int(py_obj, option, value):
     """Sets the specified option to the specified value"""
     opt_as_char = pynng.nng.to_char(option)
     # attempt to accept floats that are exactly int
-    if not int(value) == value:
+    if int(value) != value:
         msg = 'Invalid value {} of type {}.  Expected int.'
         msg = msg.format(value, type(value))
         raise ValueError(msg)
@@ -102,7 +102,7 @@ def _setopt_size(py_obj, option, value):
     """Sets the specified size option to the specified value"""
     opt_as_char = pynng.nng.to_char(option)
     # attempt to accept floats that are exactly int
-    if not int(value) == value:
+    if int(value) != value:
         msg = 'Invalid value {} of type {}.  Expected int.'
         msg = msg.format(value, type(value))
         raise ValueError(msg)
@@ -126,7 +126,7 @@ def _setopt_ms(py_obj, option, value):
     opt_as_char = pynng.nng.to_char(option)
     # attempt to accept floats that are exactly int (duration types are
     # just integers)
-    if not int(value) == value:
+    if int(value) != value:
         msg = 'Invalid value {} of type {}.  Expected int.'
         msg = msg.format(value, type(value))
         raise ValueError(msg)
