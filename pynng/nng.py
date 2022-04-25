@@ -457,11 +457,21 @@ class Socket:
         return recvd
 
     def send(self, data, block=True):
+        """Sends ``data`` on socket.
+
+        Args:
+
+          data: either ``bytes`` or ``bytearray``
+
+          block: If block is True (the default), the function will
+          not return until the operation is completed or times out.
+          If block is False, the function will raise ``pynng.TryAgain``
+          immediately if no data was sent.
+        """
+        _ensure_can_send(data)
         flags = 0
         if not block:
             flags |= lib.NNG_FLAG_NONBLOCK
-        """Sends ``data`` (either ``bytes`` or ``bytearray``) on socket."""
-        _ensure_can_send(data)
         err = lib.nng_send(self.socket, data, len(data), flags)
         check_err(err)
 
